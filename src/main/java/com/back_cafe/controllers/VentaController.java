@@ -4,10 +4,12 @@ import com.back_cafe.dtos.VentaDTO;
 import com.back_cafe.servicesintefaces.IVentaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -17,17 +19,22 @@ public class VentaController {
     private IVentaService vS;
 
     @PostMapping("/registrar")
-    public void registrarVenta(
-            @RequestParam int clienteId,
-            @RequestParam int vendedorId,
-            @RequestParam boolean factura,
-            @RequestParam BigDecimal abono,
-            @RequestParam String productos,
-            @RequestParam(required = false) Integer tipoPagoId) {
+    public ResponseEntity<String> registrarVenta(@RequestBody Map<String, Object> request) {
+        try {
+            int clienteId = (int) request.get("clienteId");
+            int vendedorId = (int) request.get("vendedorId");
+            boolean factura = (boolean) request.get("factura");
+            BigDecimal abono = new BigDecimal(request.get("abono").toString());
+            String productosJson = request.get("productos").toString();  // Convertimos a JSON en String
+            Integer tipoPagoId = (Integer) request.get("tipoPagoId");
 
-        vS.registrarVenta(clienteId, vendedorId, factura, abono, productos, tipoPagoId);
+            vS.registrarVenta(clienteId, vendedorId, factura, abono, productosJson, tipoPagoId);
+
+            return ResponseEntity.ok("Venta registrada con éxito.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al registrar la venta: " + e.getMessage());
+        }
     }
-
 
         @GetMapping
     public List<VentaDTO> listar(){
