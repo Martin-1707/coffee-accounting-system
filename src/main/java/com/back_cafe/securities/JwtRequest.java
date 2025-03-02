@@ -21,6 +21,10 @@ public class JwtRequest implements Serializable {
     }
 
     // Getters y Setters
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -1,6 +1,7 @@
 package com.back_cafe.controllers;
 
 import com.back_cafe.dtos.VentaDTO;
+import com.back_cafe.dtos.VentasProductoDTO;
 import com.back_cafe.servicesintefaces.IVentasProductoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,17 @@ public class VentasProductoController {
     private IVentasProductoService vS;
 
     @GetMapping
-    public List<VentaDTO> listar(){
+    public List<VentasProductoDTO> listar(){
         return vS.list().stream().map(x->{
             ModelMapper m=new ModelMapper();
-            return m.map(x,VentaDTO.class);
+            return m.map(x,VentasProductoDTO.class);
         }).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public VentaDTO listarId(@PathVariable("id") Integer id) {
+    public VentasProductoDTO listarId(@PathVariable("id") Integer id) {
         ModelMapper m = new ModelMapper();
-        VentaDTO dto = m.map(vS.listarId(id), VentaDTO.class);
+        VentasProductoDTO dto = m.map(vS.listarId(id), VentasProductoDTO.class);
         return dto;
     }
 }
