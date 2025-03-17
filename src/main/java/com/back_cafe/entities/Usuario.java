@@ -27,6 +27,7 @@ public class Usuario {
     @Column(length = 30, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false, length = 200)
     private String password;
 
@@ -36,7 +37,6 @@ public class Usuario {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDate fecha_creacion;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "rol_idrol",referencedColumnName ="idrol", nullable = false)
     private Rol rol;

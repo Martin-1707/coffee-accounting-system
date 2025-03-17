@@ -12,6 +12,7 @@ import java.io.IOException;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // Si hay otros filtros de seguridad que podrían bloquear CORS
 public class CORS implements Filter {
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -38,5 +39,10 @@ public class CORS implements Filter {
         }
 
         chain.doFilter(req, res);
+    }
+
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
     }
 }
