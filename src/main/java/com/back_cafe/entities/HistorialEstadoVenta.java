@@ -23,7 +23,6 @@ public class HistorialEstadoVenta {
     // Relación con Venta
     @ManyToOne
     @JoinColumn(name = "venta_idventa", referencedColumnName = "idventa", nullable = false)
-    @JsonIgnore
     private Venta venta;
 
     @Column(name = "fechacambio", nullable = false)

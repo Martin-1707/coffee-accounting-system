@@ -37,7 +37,6 @@ public class Venta {
 
     @ManyToOne
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario", nullable = false)
-    @JsonIgnore
     private Usuario usuarioCliente;
 
     @ManyToOne
