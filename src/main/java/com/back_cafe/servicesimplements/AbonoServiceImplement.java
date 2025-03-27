@@ -5,6 +5,7 @@ import com.back_cafe.repositories.IAbonoRepository;
 import com.back_cafe.servicesintefaces.IAbonoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,6 +26,7 @@ public class AbonoServiceImplement implements IAbonoService {
     }
 
     @Override
+    @Transactional
     public void registrarAbono(int ventaId, BigDecimal abono, int tipoPagoId) {
         aR.registrarAbono(ventaId, abono, tipoPagoId);
     }

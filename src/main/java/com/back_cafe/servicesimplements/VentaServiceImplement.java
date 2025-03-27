@@ -31,5 +31,9 @@ public class VentaServiceImplement implements IVentaService {
         vR.registrarVenta(clienteId, vendedorId, factura, abono, productos, tipoPagoId);
     }
 
-
+    @Override
+    @Transactional
+    public void registrarVentaSimple(int clienteId, int vendedorId, boolean factura, BigDecimal montoManual, BigDecimal abono, Integer tipoPagoId) {
+        vR.registrarVentaSimple(clienteId, vendedorId, factura, montoManual, abono, tipoPagoId);
+    }
 }

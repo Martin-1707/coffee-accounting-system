@@ -18,6 +18,7 @@ public class VentaController {
     @Autowired
     private IVentaService vS;
 
+    // Registrar una venta con productos (Método original)
     @PostMapping("/registrar")
     public ResponseEntity<String> registrarVenta(@RequestBody Map<String, Object> request) {
         try {
@@ -36,7 +37,27 @@ public class VentaController {
         }
     }
 
-        @GetMapping
+    // Nuevo método: Registrar una venta simple (Sin productos)
+    @PostMapping("/registrar-simple")
+    public ResponseEntity<String> registrarVentaSimple(@RequestBody Map<String, Object> request) {
+        try {
+            int clienteId = (int) request.get("clienteId");
+            int vendedorId = (int) request.get("vendedorId");
+            boolean factura = (boolean) request.get("factura");
+            BigDecimal montoManual = new BigDecimal(request.get("montoManual").toString());
+            BigDecimal abono = new BigDecimal(request.get("abono").toString());
+            Integer tipoPagoId = (Integer) request.get("tipoPagoId");
+
+            vS.registrarVentaSimple(clienteId, vendedorId, factura, montoManual, abono, tipoPagoId);
+
+            return ResponseEntity.ok("Venta simple registrada con éxito.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al registrar la venta simple: " + e.getMessage());
+        }
+    }
+
+    // Obtener todas las ventas
+    @GetMapping
     public List<VentaDTO> listar(){
         return vS.list().stream().map(x->{
             ModelMapper m=new ModelMapper();
@@ -44,11 +65,10 @@ public class VentaController {
         }).collect(Collectors.toList());
     }
 
+    // Obtener una venta por ID
     @GetMapping("/{id}")
     public VentaDTO listarId(@PathVariable("id") Integer id) {
         ModelMapper m = new ModelMapper();
-        VentaDTO dto = m.map(vS.listarId(id), VentaDTO.class);
-        return dto;
+        return m.map(vS.listarId(id), VentaDTO.class);
     }
-
 }

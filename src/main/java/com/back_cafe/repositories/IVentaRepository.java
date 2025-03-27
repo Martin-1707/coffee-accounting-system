@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 @Repository
 public interface IVentaRepository extends JpaRepository <Venta, Integer>{
 
+    // Método para llamar al procedimiento registrarVenta
+
     @Modifying
     @Transactional
     @Query(value = "CALL registrarventa(:p_cliente_id, :p_vendedor_id, :p_factura, :p_abono, CAST(:p_productos AS json), :p_tipopago_id)", nativeQuery = true)
@@ -29,6 +31,18 @@ public interface IVentaRepository extends JpaRepository <Venta, Integer>{
             @Param("p_tipopago_id") Integer p_tipopago_id
     );
 
+    // Método para llamar al procedimiento registrarVentaSimple
+    @Modifying
+    @Transactional
+    @Query(value = "CALL registrarventasimple(:p_cliente_id, :p_vendedor_id, :p_factura, :p_monto_manual, :p_abono, :p_tipopago_id)", nativeQuery = true)
+    void registrarVentaSimple(
+            @Param("p_cliente_id") int p_cliente_id,
+            @Param("p_vendedor_id") int p_vendedor_id,
+            @Param("p_factura") boolean p_factura,
+            @Param("p_monto_manual") BigDecimal p_monto_manual,
+            @Param("p_abono") BigDecimal p_abono,
+            @Param("p_tipopago_id") Integer p_tipopago_id
+    );
 
 }
 
