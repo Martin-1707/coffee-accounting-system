@@ -4,6 +4,9 @@ import com.back_cafe.entities.CompraInsumo;
 import com.back_cafe.repositories.ICompraInsumoRepository;
 import com.back_cafe.servicesintefaces.ICompraInsumoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +39,21 @@ public class CompraInsumoServiceImplement implements ICompraInsumoService {
     @Override
     public CompraInsumo listarId(int id) {
         return ciR.findById(id).orElse(new CompraInsumo());
+    }
+
+    @Override
+    public List<CompraInsumo> obtenerComprasPorUsuario() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        boolean isAdminOrSupervisor = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("Administrador") || role.equals("Supervisor"));
+
+        if (isAdminOrSupervisor) {
+            return ciR.findAll(); // Devuelve todas las compras de insumo
+        } else {
+            return ciR.findByUsuario_Username(username); // Devuelve solo las compras del vendedor logueado
+        }
     }
 }

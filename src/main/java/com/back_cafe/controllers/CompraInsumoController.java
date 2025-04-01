@@ -25,7 +25,7 @@ public class CompraInsumoController {
 
     @GetMapping
     public List<CompraInsumoDTO> listar(){
-        return ciS.list().stream().map(x->{
+        return ciS.obtenerComprasPorUsuario().stream().map(x->{
             ModelMapper m=new ModelMapper();
             return m.map(x,CompraInsumoDTO.class);
         }).collect(Collectors.toList());

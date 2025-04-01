@@ -14,4 +14,6 @@ public interface IVentaService {
     void registrarVenta(int clienteId, int vendedorId, boolean factura, BigDecimal abono, String productos, Integer tipoPagoId);
     // Create (registrar venta simple)
     void registrarVentaSimple(int clienteId, int vendedorId, boolean factura, BigDecimal montoManual, BigDecimal abono, Integer tipoPagoId);
+    // 🔒 Nuevo método: Obtener ventas filtradas por usuario autenticado
+    List<Venta> obtenerVentasPorUsuario();
 }

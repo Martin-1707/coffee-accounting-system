@@ -1,5 +1,9 @@
 package com.back_cafe.dtos;
 
+import com.back_cafe.entities.Usuario;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDate;
 
 public class CompraInsumoDTO {
@@ -7,6 +11,7 @@ public class CompraInsumoDTO {
     private LocalDate fecha_inicial;
     private LocalDate fecha_final;
     private double monto;
+    private Usuario usuario;
 
     public int getIdcompra() {
         return idcompra;
@@ -38,5 +43,13 @@ public class CompraInsumoDTO {
 
     public void setMonto(double monto) {
         this.monto = monto;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

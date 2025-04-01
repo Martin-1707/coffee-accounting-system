@@ -1,8 +1,6 @@
 package com.back_cafe.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -10,19 +8,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "venta")
-
-@NamedStoredProcedureQuery(
-        name = "registrarventa2",
-        procedureName = "public.registrarventa2",
-        parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class), // ID Cliente
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class), // ID Vendedor
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Boolean.class), // Requiere Factura
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class), // Abono
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class), // Productos JSONB
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class) // Tipo de Pago
-        }
-)
 
 public class Venta {
     @Id
@@ -41,7 +26,6 @@ public class Venta {
 
     @ManyToOne
     @JoinColumn(name = "usuario_idusuario2", referencedColumnName = "idusuario", nullable = false)
-    @JsonIgnore
     private Usuario usuarioVendedor;
 
     @Column(name = "factura", nullable = false)

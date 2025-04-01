@@ -13,4 +13,6 @@ public interface IAbonoService {
     public Abono listarId(int id);
 
     public void registrarAbono(int ventaId, BigDecimal abono, int tipoPagoId);
+
+    List<Abono> obtenerAbonosPorUsuario();
 }

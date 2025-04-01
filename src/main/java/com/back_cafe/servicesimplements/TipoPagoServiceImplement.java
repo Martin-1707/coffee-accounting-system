@@ -13,7 +13,6 @@ public class TipoPagoServiceImplement implements ITipoPagoService {
     @Autowired
     private ITipoPagoRepository tpR;
 
-
     @Override
     public void insert(TipoPago tipoPago) {
         tpR.save(tipoPago);

@@ -13,7 +13,6 @@ public class EstadoVentaServiceImplement implements IEstadoVentaService {
     @Autowired
     private IEstadoVentaRepository evR;
 
-
     @Override
     public void insert(EstadoVenta estadoVenta) {
         evR.save(estadoVenta);

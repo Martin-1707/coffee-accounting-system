@@ -7,12 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 public interface IVentaRepository extends JpaRepository <Venta, Integer>{
@@ -44,5 +43,7 @@ public interface IVentaRepository extends JpaRepository <Venta, Integer>{
             @Param("p_tipopago_id") Integer p_tipopago_id
     );
 
+    // 🔎 Nuevo método: Filtrar ventas donde el usuario sea cliente o vendedor
+    List<Venta> findByUsuarioCliente_UsernameOrUsuarioVendedor_Username(String clienteUsername, String vendedorUsername);
 }
 

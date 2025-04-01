@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 public interface IAbonoRepository extends JpaRepository<Abono, Integer> {
@@ -20,4 +21,6 @@ public interface IAbonoRepository extends JpaRepository<Abono, Integer> {
             @Param("p_abono") BigDecimal p_abono,
             @Param("p_tipopago_id") int p_tipopago_id
     );
+
+    List<Abono> findByVenta_UsuarioCliente_UsernameOrVenta_UsuarioVendedor_Username(String clienteUsername, String vendedorUsername);
 }

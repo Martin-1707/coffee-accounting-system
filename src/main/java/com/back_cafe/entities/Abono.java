@@ -1,7 +1,6 @@
 package com.back_cafe.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -24,7 +23,6 @@ public class Abono {
 
     @ManyToOne
     @JoinColumn(name = "venta_idventa", referencedColumnName = "idventa", nullable = false)
-    @JsonIgnore
     private Venta venta;
 
     @ManyToOne

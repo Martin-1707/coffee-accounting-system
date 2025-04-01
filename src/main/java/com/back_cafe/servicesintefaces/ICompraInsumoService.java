@@ -15,4 +15,6 @@ public interface ICompraInsumoService {
     public void delete(int id);
     //ListarId
     public CompraInsumo listarId(int id);
+
+    List<CompraInsumo> obtenerComprasPorUsuario();
 }

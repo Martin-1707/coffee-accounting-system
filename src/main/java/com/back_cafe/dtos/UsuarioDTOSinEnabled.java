@@ -4,13 +4,12 @@ import com.back_cafe.entities.Rol;
 
 import java.time.LocalDate;
 
-public class UsuarioDTO {
+public class UsuarioDTOSinEnabled {
     private int idusuario;
     private String nombre;
     private String apellido;
     private String email;
     private String username;
-    private Boolean enabled;
     private LocalDate fecha_creacion;
     private Rol rol;
 
@@ -52,14 +51,6 @@ public class UsuarioDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
     }
 
     public LocalDate getFecha_creacion() {

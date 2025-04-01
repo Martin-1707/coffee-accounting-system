@@ -3,7 +3,6 @@ package com.back_cafe.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "compra_insumo")
@@ -21,13 +20,18 @@ public class CompraInsumo {
     @Column(name = "monto", nullable = false)
     private double monto;
 
+    @ManyToOne
+    @JoinColumn(name = "idusuario", nullable = false) // Relación con Usuario
+    private Usuario usuario;
+
     public CompraInsumo() { }
 
-    public CompraInsumo(int idcompra, LocalDate fecha_inicial, LocalDate fecha_final, double monto) {
+    public CompraInsumo(int idcompra, LocalDate fecha_inicial, LocalDate fecha_final, double monto, Usuario usuario) {
         this.idcompra = idcompra;
         this.fecha_inicial = fecha_inicial;
         this.fecha_final = fecha_final;
         this.monto = monto;
+        this.usuario = usuario;
     }
 
     public int getIdcompra() {
@@ -60,5 +64,13 @@ public class CompraInsumo {
 
     public void setMonto(double monto) {
         this.monto = monto;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

@@ -11,4 +11,9 @@ public interface IHistorialEstadoVentaService {
 
     //ListarId
     public HistorialEstadoVenta listarId(int id);
+
+    // 🔒 Nuevo método: Obtener historial de estados de venta filtrado por usuario autenticado
+    List<HistorialEstadoVenta> obtenerHistorialPorUsuario();
+
 }
+

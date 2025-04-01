@@ -16,10 +16,10 @@ public class HistorialVentaController {
     private IHistorialEstadoVentaService hS;
 
     @GetMapping
-    public List<HistorialEstadoVentaDTO> listar(){
-        return hS.list().stream().map(x->{
-            ModelMapper m=new ModelMapper();
-            return m.map(x,HistorialEstadoVentaDTO.class);
+    public List<HistorialEstadoVentaDTO> listar() {
+        return hS.obtenerHistorialPorUsuario().stream().map(x -> {
+            ModelMapper m = new ModelMapper();
+            return m.map(x, HistorialEstadoVentaDTO.class);
         }).collect(Collectors.toList());
     }
 

@@ -9,4 +9,6 @@ public interface IVentasProductoService {
     public List<VentasProducto> list();
     //ListarId
     public VentasProducto listarId(int id);
+    // 🔒 Listar productos de ventas filtrados por usuario autenticado
+    List<VentasProducto> obtenerVentasProductoPorUsuario();
 }

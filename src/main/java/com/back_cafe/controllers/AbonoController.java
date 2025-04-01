@@ -20,9 +20,9 @@ public class AbonoController {
 
     @GetMapping
     public List<AbonoDTO> listar() {
-        return aS.list().stream().map(x->{
-            ModelMapper m=new ModelMapper();
-            return m.map(x,AbonoDTO.class);
+        return aS.obtenerAbonosPorUsuario().stream().map(x -> {
+            ModelMapper m = new ModelMapper();
+            return m.map(x, AbonoDTO.class);
         }).collect(Collectors.toList());
     }
 

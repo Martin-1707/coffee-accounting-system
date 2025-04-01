@@ -15,5 +15,8 @@ public interface IUsuarioService {
     public void delete(int id);
     //ListarId
     public Usuario listarId(int id);
+    // 🔒 Nuevo método: Obtener usuarios filtrados por rol
+    List<?> obtenerUsuariosPorRol();
 
+    public boolean cambiarPassword(int idusuario, String oldPassword, String newPassword);
 }

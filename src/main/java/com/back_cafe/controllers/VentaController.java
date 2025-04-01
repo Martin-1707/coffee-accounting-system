@@ -56,12 +56,12 @@ public class VentaController {
         }
     }
 
-    // Obtener todas las ventas
+    // Obtener solo las ventas del usuario autenticado
     @GetMapping
-    public List<VentaDTO> listar(){
-        return vS.list().stream().map(x->{
-            ModelMapper m=new ModelMapper();
-            return m.map(x,VentaDTO.class);
+    public List<VentaDTO> listar() {
+        return vS.obtenerVentasPorUsuario().stream().map(x -> {
+            ModelMapper m = new ModelMapper();
+            return m.map(x, VentaDTO.class);
         }).collect(Collectors.toList());
     }
 
