@@ -5,9 +5,11 @@ import com.back_cafe.entities.Producto;
 import com.back_cafe.servicesintefaces.IProductoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -48,4 +50,19 @@ public class ProductoController {
         ProductoDTO dto = m.map(pS.listarId(id), ProductoDTO.class);
         return dto;
     }
+    @PostMapping("/actualizarPrecio")
+    public ResponseEntity<String> actualizarPrecio(@RequestBody Map<String, Object> request) {
+        try {
+            Integer idProducto = (Integer) request.get("idProducto");
+            Double nuevoPrecio = Double.parseDouble(request.get("nuevoPrecio").toString());
+            Integer idUsuario = (Integer) request.get("idUsuario");
+
+            pS.actualizarPrecioProducto(idProducto, nuevoPrecio, idUsuario);
+
+            return ResponseEntity.ok("Precio actualizado correctamente.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al actualizar el precio: " + e.getMessage());
+        }
+    }
+
 }

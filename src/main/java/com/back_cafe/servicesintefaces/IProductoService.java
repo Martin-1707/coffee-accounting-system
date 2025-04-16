@@ -15,4 +15,6 @@ public interface IProductoService {
     public void delete(int id);
     //ListarId
     public Producto listarId(int id);
+    //Actualizar precio
+    void actualizarPrecioProducto(Integer idProducto, Double nuevoPrecio, Integer idUsuario);
 }

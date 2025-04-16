@@ -37,4 +37,9 @@ public class ProductoServiceImplement implements IProductoService {
     public Producto listarId(int id) {
         return pR.findById(id).orElse(new Producto());
     }
+
+    @Override
+    public void actualizarPrecioProducto(Integer idProducto, Double nuevoPrecio, Integer idUsuario) {
+        pR.actualizarPrecioProducto(idProducto, nuevoPrecio, idUsuario);
+    }
 }
