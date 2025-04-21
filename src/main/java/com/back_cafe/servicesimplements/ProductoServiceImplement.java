@@ -24,11 +24,6 @@ public class ProductoServiceImplement implements IProductoService {
     }
 
     @Override
-    public void update(Producto producto) {
-        pR.save(producto);
-    }
-
-    @Override
     public void delete(int id) {
         pR.deleteById(id);
     }

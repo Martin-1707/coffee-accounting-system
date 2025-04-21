@@ -9,12 +9,10 @@ public interface IProductoService {
     public void insert(Producto producto);
     //Read
     public List<Producto> list();
-    //Update
-    public void update(Producto producto);
+    //Update-Actualizar precio
+    public void actualizarPrecioProducto(Integer idProducto, Double nuevoPrecio, Integer idUsuario);
     //Delete
     public void delete(int id);
     //ListarId
     public Producto listarId(int id);
-    //Actualizar precio
-    void actualizarPrecioProducto(Integer idProducto, Double nuevoPrecio, Integer idUsuario);
 }

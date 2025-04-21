@@ -15,6 +15,11 @@ public class HistorialPrecioProductoServiceImplement implements IHistorialPrecio
     private IHistorialPrecioProductoRepository hprR;
 
     @Override
+    public void insert(HistorialPrecioProducto historialPrecioProducto) {
+        hprR.save(historialPrecioProducto);
+    }
+
+    @Override
     public List<HistorialPrecioProducto> list() {
         return hprR.findAll();
     }
