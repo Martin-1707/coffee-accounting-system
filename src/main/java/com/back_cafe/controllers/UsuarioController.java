@@ -52,6 +52,13 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/clientes")
+    public List<UsuarioDTO> listarClientes() {
+        return uS.obtenerUsuariosCliente().stream().map(x -> {
+            ModelMapper m = new ModelMapper();
+            return m.map(x, UsuarioDTO.class);
+        }).collect(Collectors.toList());
+    }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable("id") Integer id){

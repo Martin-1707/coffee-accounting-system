@@ -64,6 +64,11 @@ public class UsuarioServiceImplement implements IUsuarioService {
         }
     }
 
+    @Override
+    public List<Usuario> obtenerUsuariosCliente() {
+        return uR.listarPorIdRol(4); // 4 es el idRol de Cliente
+    }
+
     public boolean cambiarPassword(int idusuario, String oldPassword, String newPassword) {
         Optional<Usuario> usuarioOptional = uR.findById(idusuario);
 
