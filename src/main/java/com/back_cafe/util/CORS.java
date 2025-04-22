@@ -24,7 +24,7 @@ public class CORS implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
 
         String origin = request.getHeader("Origin");
-        if (origin != null && (origin.equals("http://localhost:4200") || origin.equals("https://tudominio.netlify.app")) || origin.equals("https://coffee-accounting-ui.vercel.app")) {
+        if (origin != null && (origin.equals("http://localhost:4200") || origin.equals("https://tudominio.netlify.app"))) {
             response.setHeader("Access-Control-Allow-Origin", origin);
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
