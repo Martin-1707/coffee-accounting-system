@@ -13,26 +13,52 @@ public class Usuario {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int idusuario;
 
+//    @Column(name = "nombre", nullable = false, length = 100)
+//    private String nombre;
+//
+////    @Column(name = "apellido", nullable = false, length = 100)
+//    private String apellido;
+//
+//    @Column(name = "email", length = 100)
+//    private String email;
+//
+//    @Column(length = 30, unique = true)
+//    private String username;
+//
+//    @JsonIgnore
+//    @Column(name = "password", nullable = false, length = 200)
+//    private String password;
+//
+//    @Column(name = "estado", nullable = false)
+//    private Boolean enabled;
+//
+//    @Column(name = "fecha_creacion", nullable = false)
+//    private LocalDate fecha_creacion;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "rol_idrol",referencedColumnName ="idrol", nullable = false)
+//    private Rol rol;
+
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
     @Column(name = "apellido", nullable = false, length = 100)
     private String apellido;
 
-    @Column(name = "email", length = 100)
+    @Column(name = "email", nullable = true, length = 100)
     private String email;
 
-    @Column(length = 30, unique = true)
+    @Column(length = 30, nullable = true, unique = true)
     private String username;
 
     @JsonIgnore
-    @Column(name = "password", nullable = false, length = 200)
+    @Column(name = "password", nullable = true, length = 200)
     private String password;
 
     @Column(name = "estado", nullable = false)
     private Boolean enabled;
 
-    @Column(name = "fecha_creacion", nullable = false)
+    @Column(name = "fecha_creacion", nullable = true)
     private LocalDate fecha_creacion;
 
     @ManyToOne
