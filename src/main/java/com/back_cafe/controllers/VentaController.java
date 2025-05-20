@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,16 +27,25 @@ public class VentaController {
             int vendedorId = (int) request.get("vendedorId");
             boolean factura = (boolean) request.get("factura");
             BigDecimal abono = new BigDecimal(request.get("abono").toString());
-            String productosJson = request.get("productos").toString();  // Convertimos a JSON en String
+            String productosJson = request.get("productos").toString();
             Integer tipoPagoId = (Integer) request.get("tipoPagoId");
 
-            vS.registrarVenta(clienteId, vendedorId, factura, abono, productosJson, tipoPagoId);
+            // ✅ Nueva lógica: procesar la fecha si viene
+            LocalDate fechaVenta = null;
+            if (request.containsKey("fechaVenta") && request.get("fechaVenta") != null) {
+                String fechaStr = request.get("fechaVenta").toString();
+                fechaVenta = LocalDate.parse(fechaStr); // Asegúrate de que venga en formato yyyy-MM-dd
+            }
+
+            // ✅ Nuevo parámetro incluido
+            vS.registrarVenta(clienteId, vendedorId, factura, abono, productosJson, tipoPagoId, fechaVenta);
 
             return ResponseEntity.ok("Venta registrada con éxito.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al registrar la venta: " + e.getMessage());
         }
     }
+
 
     // Nuevo método: Registrar una venta simple (Sin productos)
     @PostMapping("/registrar-simple")
@@ -46,9 +56,17 @@ public class VentaController {
             boolean factura = (boolean) request.get("factura");
             BigDecimal montoManual = new BigDecimal(request.get("montoManual").toString());
             BigDecimal abono = new BigDecimal(request.get("abono").toString());
-            Integer tipoPagoId = (Integer) request.get("tipoPagoId");
+            Integer tipoPagoId = request.get("tipoPagoId") != null ? (Integer) request.get("tipoPagoId") : null;
 
-            vS.registrarVentaSimple(clienteId, vendedorId, factura, montoManual, abono, tipoPagoId);
+            // ✅ Nueva lógica: procesar la fecha si viene (fecha y hora)
+            LocalDate fechaVenta = null;
+            if (request.containsKey("fechaVenta") && request.get("fechaVenta") != null) {
+                String fechaStr = request.get("fechaVenta").toString(); // formato esperado: "2025-05-19 10:30:00"
+                fechaVenta = LocalDate.parse(fechaStr);
+            }
+
+            // ✅ Llamada a la lógica del servicio según presencia de fecha
+            vS.registrarVentaSimple(clienteId, vendedorId, factura, montoManual, abono, tipoPagoId, fechaVenta);
 
             return ResponseEntity.ok("Venta simple registrada con éxito.");
         } catch (Exception e) {

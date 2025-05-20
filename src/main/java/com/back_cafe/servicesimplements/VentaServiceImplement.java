@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,15 +31,16 @@ public class VentaServiceImplement implements IVentaService {
 
     @Override
     @Transactional
-    public void registrarVenta(int clienteId, int vendedorId, boolean factura, BigDecimal abono, String productos, Integer tipoPagoId) {
-        vR.registrarVenta(clienteId, vendedorId, factura, abono, productos, tipoPagoId);
+    public void registrarVenta(int clienteId, int vendedorId, boolean factura, BigDecimal abono, String productos, Integer tipoPagoId, LocalDate fechaVenta) {
+        vR.registrarVenta(clienteId, vendedorId, factura, abono, productos, tipoPagoId, fechaVenta);
     }
 
     @Override
     @Transactional
-    public void registrarVentaSimple(int clienteId, int vendedorId, boolean factura, BigDecimal montoManual, BigDecimal abono, Integer tipoPagoId) {
-        vR.registrarVentaSimple(clienteId, vendedorId, factura, montoManual, abono, tipoPagoId);
+    public void registrarVentaSimple(int clienteId, int vendedorId, boolean factura, BigDecimal montoManual, BigDecimal abono, Integer tipoPagoId, LocalDate fechaVenta) {
+        vR.registrarVentaSimple(clienteId, vendedorId, factura, montoManual, abono, tipoPagoId, fechaVenta);
     }
+
 
     // 🔒 Nuevo método: Filtrar ventas según el usuario autenticado y su rol
     @Override
