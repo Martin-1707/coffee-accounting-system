@@ -23,4 +23,6 @@ public interface IAbonoRepository extends JpaRepository<Abono, Integer> {
     );
 
     List<Abono> findByVenta_UsuarioCliente_UsernameOrVenta_UsuarioVendedor_Username(String clienteUsername, String vendedorUsername);
+
+    List<Abono> findByVenta_Idventa(int idventa);
 }

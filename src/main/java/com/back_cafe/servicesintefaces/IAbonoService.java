@@ -15,4 +15,6 @@ public interface IAbonoService {
     public void registrarAbono(int ventaId, BigDecimal abono, int tipoPagoId);
 
     List<Abono> obtenerAbonosPorUsuario();
+    // Listar abonos de una venta
+    List<Abono> obtenerAbonosPorVenta(int ventaId);
 }

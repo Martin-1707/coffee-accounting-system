@@ -45,4 +45,9 @@ public class AbonoServiceImplement implements IAbonoService {
 
         return isAdminOrSupervisor ? aR.findAll() : aR.findByVenta_UsuarioCliente_UsernameOrVenta_UsuarioVendedor_Username(username, username);
     }
+
+    public List<Abono> obtenerAbonosPorVenta(int ventaId) {
+        return aR.findByVenta_Idventa(ventaId);
+    }
+
 }

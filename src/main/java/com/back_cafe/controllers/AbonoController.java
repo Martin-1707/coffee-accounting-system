@@ -48,4 +48,14 @@ public class AbonoController {
         }
     }
 
+    @GetMapping("/venta/{ventaId}")
+    public ResponseEntity<List<AbonoDTO>> listarAbonosPorVenta(@PathVariable int ventaId) {
+        List<AbonoDTO> lista = aS.obtenerAbonosPorVenta(ventaId).stream()
+                .map(a -> new ModelMapper().map(a, AbonoDTO.class))
+                .collect(Collectors.toList());
+        if (lista.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(lista);
+    }
 }
