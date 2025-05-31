@@ -13,32 +13,6 @@ public class Usuario {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int idusuario;
 
-//    @Column(name = "nombre", nullable = false, length = 100)
-//    private String nombre;
-//
-////    @Column(name = "apellido", nullable = false, length = 100)
-//    private String apellido;
-//
-//    @Column(name = "email", length = 100)
-//    private String email;
-//
-//    @Column(length = 30, unique = true)
-//    private String username;
-//
-//    @JsonIgnore
-//    @Column(name = "password", nullable = false, length = 200)
-//    private String password;
-//
-//    @Column(name = "estado", nullable = false)
-//    private Boolean enabled;
-//
-//    @Column(name = "fecha_creacion", nullable = false)
-//    private LocalDate fecha_creacion;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "rol_idrol",referencedColumnName ="idrol", nullable = false)
-//    private Rol rol;
-
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
@@ -73,9 +47,19 @@ public class Usuario {
     @JsonIgnore
     private List<Venta> ventasComoVendedor;
 
+    // Nuevo campo: referencia al usuario "padre" (quien supervisa)
+    @ManyToOne
+    @JoinColumn(name = "id_padre")
+    private Usuario usuarioPadre;
+
+    // Nuevo campo: lista de usuarios subordinados (hijos)
+    @OneToMany(mappedBy = "usuarioPadre")
+    @JsonIgnore
+    private List<Usuario> subordinados;
+
     public Usuario() { }
 
-    public Usuario(int idusuario, String nombre, String apellido, String email, String username, String password, Boolean enabled, LocalDate fecha_creacion, Rol rol) {
+    public Usuario(int idusuario, String nombre, String apellido, String email, String username, String password, Boolean enabled, LocalDate fecha_creacion, Rol rol, Usuario usuarioPadre) {
         this.idusuario = idusuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -85,6 +69,7 @@ public class Usuario {
         this.enabled = enabled;
         this.fecha_creacion = fecha_creacion;
         this.rol = rol;
+        this.usuarioPadre = usuarioPadre;
     }
 
     public int getIdusuario() {
@@ -159,5 +144,12 @@ public class Usuario {
         this.rol = rol;
     }
 
+    public Usuario getUsuarioPadre() {return usuarioPadre;}
+
+    public void setUsuarioPadre(Usuario usuarioPadre) {this.usuarioPadre = usuarioPadre;}
+
+    public List<Usuario> getSubordinados() {return subordinados;}
+
+    public void setSubordinados(List<Usuario> subordinados) {this.subordinados = subordinados;}
 
 }

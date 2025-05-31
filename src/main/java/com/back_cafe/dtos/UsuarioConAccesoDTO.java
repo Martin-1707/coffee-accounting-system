@@ -1,17 +1,23 @@
 package com.back_cafe.dtos;
 
 import com.back_cafe.entities.Rol;
+import com.back_cafe.entities.Usuario;
 
 import java.time.LocalDate;
 
-public class UsuarioDTOSinEnabled {
+public class UsuarioConAccesoDTO {
     private int idusuario;
     private String nombre;
     private String apellido;
     private String email;
     private String username;
+    private String password;
+    private Boolean enabled;
     private LocalDate fecha_creacion;
     private Rol rol;
+    private Usuario usuarioPadre;
+
+    // Getters y Setters
 
     public int getIdusuario() {
         return idusuario;
@@ -53,6 +59,22 @@ public class UsuarioDTOSinEnabled {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public LocalDate getFecha_creacion() {
         return fecha_creacion;
     }
@@ -67,5 +89,13 @@ public class UsuarioDTOSinEnabled {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    public Usuario getUsuarioPadre() {
+        return usuarioPadre;
+    }
+
+    public void setUsuarioPadre(Usuario usuarioPadre) {
+        this.usuarioPadre = usuarioPadre;
     }
 }

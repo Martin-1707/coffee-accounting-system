@@ -1,5 +1,7 @@
 package com.back_cafe.controllers;
 
+import com.back_cafe.dtos.UsuarioComunDTO;
+import com.back_cafe.dtos.UsuarioConAccesoDTO;
 import com.back_cafe.dtos.UsuarioDTO;
 import com.back_cafe.dtos.UsuarioPasswordDTO;
 import com.back_cafe.entities.Usuario;
@@ -20,11 +22,31 @@ public class UsuarioController {
     private IUsuarioService uS;
 
     @PostMapping
-    public void insertar(@RequestBody UsuarioDTO dto){
-        ModelMapper m=new ModelMapper();
-        Usuario mn=m.map(dto,Usuario.class);
-        uS.insert(mn);
+    public ResponseEntity<?> insertar(@RequestBody UsuarioConAccesoDTO dto) {
+        try {
+            ModelMapper m = new ModelMapper();
+            Usuario mn = m.map(dto, Usuario.class);
+            uS.insert(mn);
+            return ResponseEntity.ok("Usuario registrado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Error al registrar usuario: " + e.getMessage());
+        }
     }
+
+    @PostMapping("/clientes")
+    public ResponseEntity<?> insertarCliente(@RequestBody UsuarioComunDTO dto) {
+        try {
+            ModelMapper m = new ModelMapper();
+            Usuario mn = m.map(dto, Usuario.class);
+            uS.insert(mn);
+            return ResponseEntity.ok("Cliente registrado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Error al registrar cliente: " + e.getMessage());
+        }
+    }
+
 
     @GetMapping
     public List<UsuarioDTO> listar() {
@@ -71,4 +93,49 @@ public class UsuarioController {
         UsuarioDTO dto = m.map(uS.listarId(id), UsuarioDTO.class);
         return dto;
     }
+
+    // Nuevo endpoint para listar clientes por vendedor
+    @GetMapping("/vendedor/{idVendedor}/clientes")
+    public List<UsuarioComunDTO> listarClientesPorVendedor(@PathVariable("idVendedor") int idVendedor) {
+        return uS.listarClientesPorVendedor(idVendedor).stream()
+                .map(usuario -> {
+                    ModelMapper m = new ModelMapper();
+                    return m.map(usuario, UsuarioComunDTO.class);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Nuevo endpoint para listar vendedores por asesor
+    @GetMapping("/asesor/{idAsesor}/vendedores")
+    public List<UsuarioDTO> listarVendedoresPorAsesor(@PathVariable("idAsesor") int idAsesor) {
+        return uS.listarVendedoresPorAsesor(idAsesor).stream()
+                .map(usuario -> {
+                    ModelMapper m = new ModelMapper();
+                    return m.map(usuario, UsuarioDTO.class);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Nuevo endpoint para listar asesores por administrador
+    @GetMapping("/admin/{idAdmin}/asesores")
+    public List<UsuarioDTO> listarAsesoresPorAdmin(@PathVariable("idAdmin") int idAdmin) {
+        return uS.listarAsesoresPorAdmin(idAdmin).stream()
+                .map(usuario -> {
+                    ModelMapper m = new ModelMapper();
+                    return m.map(usuario, UsuarioDTO.class);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Nuevo endpoint para listar subordinados directos
+    @GetMapping("/{idUsuario}/subordinados")
+    public List<UsuarioDTO> listarSubordinados(@PathVariable("idUsuario") int idUsuario) {
+        return uS.listarSubordinados(idUsuario).stream()
+                .map(usuario -> {
+                    ModelMapper m = new ModelMapper();
+                    return m.map(usuario, UsuarioDTO.class);
+                })
+                .collect(Collectors.toList());
+    }
+
 }
