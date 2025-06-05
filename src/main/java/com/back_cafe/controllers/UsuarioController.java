@@ -1,15 +1,13 @@
 package com.back_cafe.controllers;
 
-import com.back_cafe.dtos.UsuarioComunDTO;
-import com.back_cafe.dtos.UsuarioConAccesoDTO;
-import com.back_cafe.dtos.UsuarioDTO;
-import com.back_cafe.dtos.UsuarioPasswordDTO;
+import com.back_cafe.dtos.*;
 import com.back_cafe.entities.Usuario;
 import com.back_cafe.servicesintefaces.IUsuarioService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -128,7 +126,7 @@ public class UsuarioController {
     }
 
     // Nuevo endpoint para listar subordinados directos
-    @GetMapping("/{idUsuario}/subordinados")
+    @GetMapping("/{idUsuario}/listarSubordinados")
     public List<UsuarioDTO> listarSubordinados(@PathVariable("idUsuario") int idUsuario) {
         return uS.listarSubordinados(idUsuario).stream()
                 .map(usuario -> {
@@ -138,4 +136,41 @@ public class UsuarioController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/visibles")
+    public ResponseEntity<List<Usuario>> getUsuariosVisibles(Authentication auth) {
+        Usuario actual = uS.findByUsername(auth.getName());
+        List<Usuario> visibles = uS.obtenerUsuariosVisibles(actual);
+        return ResponseEntity.ok(visibles);
+    }
+
+    @GetMapping("/jerarquia")
+    public ResponseEntity<UsuarioJerarquicoDTO> getJerarquia(Authentication auth) {
+        Usuario actual = uS.findByUsername(auth.getName());
+        UsuarioJerarquicoDTO dto = uS.construirJerarquia(actual);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioDTO> obtenerUsuarioActual(Authentication auth) {
+        try {
+            UsuarioDTO dto = uS.obtenerUsuarioActual(auth);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/superior")
+    public ResponseEntity<UsuarioSuperiorDTO> obtenerSuperior(Authentication auth) {
+        try {
+            Usuario usuario = uS.findByUsername(auth.getName());
+            if (usuario.getUsuarioPadre() == null) {
+                return ResponseEntity.noContent().build();
+            }
+            ModelMapper m = new ModelMapper();
+            UsuarioSuperiorDTO dto = m.map(usuario.getUsuarioPadre(), UsuarioSuperiorDTO.class);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

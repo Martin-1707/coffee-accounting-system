@@ -1,9 +1,12 @@
 package com.back_cafe.servicesimplements;
 
-import com.back_cafe.dtos.UsuarioComunDTO;
+import com.back_cafe.dtos.UsuarioDTO;
+import com.back_cafe.dtos.UsuarioJerarquicoDTO;
+import com.back_cafe.entities.Rol;
 import com.back_cafe.entities.Usuario;
 import com.back_cafe.repositories.IUsuarioRepository;
 import com.back_cafe.servicesintefaces.IUsuarioService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,9 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,6 +100,88 @@ public class UsuarioServiceImplement implements IUsuarioService {
         }
         return Collections.emptyList();
     }
+
+    @Override
+    public Usuario findByUsername(String username) {
+        return uR.findByUsername(username);
+    }
+
+    private void agregarSubordinados(Usuario usuario, Set<Usuario> visibles) {
+        for (Usuario sub : usuario.getSubordinados()) {
+            if (visibles.add(sub)) { // Evita duplicados y bucles
+                agregarSubordinados(sub, visibles); // Recurse hacia abajo
+            }
+        }
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuariosVisibles(Usuario usuario) {
+        // Usamos un Set para evitar duplicados y prevenir ciclos
+        Set<Usuario> visiblesSet = new LinkedHashSet<>();
+        // 1) Se ve a sí mismo
+        visiblesSet.add(usuario);
+
+        // 2) Si tiene un padre, lo agrega
+        if (usuario.getUsuarioPadre() != null) {
+            visiblesSet.add(usuario.getUsuarioPadre());
+        }
+
+        // 3) Agrega recursivamente a todos sus subordinados
+        agregarSubordinadosRecursivo(usuario, visiblesSet);
+
+        // Convertimos a lista y devolvemos
+        return new ArrayList<>(visiblesSet);
+    }
+
+    @Override
+    public UsuarioJerarquicoDTO construirJerarquia(Usuario usuario) {
+        UsuarioJerarquicoDTO dto = new UsuarioJerarquicoDTO();
+        dto.setIdusuario(usuario.getIdusuario());
+        dto.setNombre(usuario.getNombre());
+        dto.setApellido(usuario.getApellido());
+        dto.setRol(usuario.getRol().getNombre_rol());
+
+        if (usuario.getSubordinados() != null && !usuario.getSubordinados().isEmpty()) {
+            List<UsuarioJerarquicoDTO> hijos = usuario.getSubordinados().stream()
+                    .map(this::construirJerarquia)
+                    .collect(Collectors.toList());
+            dto.setSubordinados(hijos);
+        } else {
+            dto.setSubordinados(new ArrayList<>());
+        }
+
+        return dto;
+    }
+
+    @Override
+    public UsuarioDTO obtenerUsuarioActual(Authentication auth) {
+        Usuario usuario = findByUsername(auth.getName());
+        if (usuario == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(usuario, UsuarioDTO.class);
+    }
+
+
+
+    /**
+     * Método auxiliar recursivo para agregar “todos los subordinados en profundidad”
+     * del usuario dado al Set contenedor.
+     */
+    private void agregarSubordinadosRecursivo(Usuario padre, Set<Usuario> contenedor) {
+        if (padre.getSubordinados() == null) {
+            return;
+        }
+        for (Usuario sub : padre.getSubordinados()) {
+            // Si aún no estaba en contenedor, lo agregamos y descendemos
+            if (contenedor.add(sub)) {
+                agregarSubordinadosRecursivo(sub, contenedor);
+            }
+        }
+    }
+
 
     @Override
     public List<Usuario> obtenerUsuariosPorRol() {

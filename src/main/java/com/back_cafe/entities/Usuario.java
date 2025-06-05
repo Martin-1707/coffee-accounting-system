@@ -48,6 +48,7 @@ public class Usuario {
     private List<Venta> ventasComoVendedor;
 
     // Nuevo campo: referencia al usuario "padre" (quien supervisa)
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_padre")
     private Usuario usuarioPadre;
