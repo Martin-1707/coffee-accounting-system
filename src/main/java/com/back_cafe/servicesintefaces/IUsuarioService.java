@@ -1,6 +1,5 @@
 package com.back_cafe.servicesintefaces;
 
-import com.back_cafe.dtos.UsuarioComunDTO;
 import com.back_cafe.dtos.UsuarioDTO;
 import com.back_cafe.dtos.UsuarioJerarquicoDTO;
 import com.back_cafe.entities.Usuario;

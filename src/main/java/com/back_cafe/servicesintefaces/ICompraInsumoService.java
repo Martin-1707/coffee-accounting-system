@@ -1,5 +1,6 @@
 package com.back_cafe.servicesintefaces;
 
+import com.back_cafe.dtos.CompraResumenDTO;
 import com.back_cafe.entities.CompraInsumo;
 
 import java.util.List;

@@ -2,8 +2,6 @@ package com.back_cafe.dtos;
 
 import com.back_cafe.entities.Rol;
 
-import java.time.LocalDate;
-
 public class UsuarioSuperiorDTO {
     private String nombre;
     private String apellido;

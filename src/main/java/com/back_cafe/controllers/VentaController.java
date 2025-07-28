@@ -1,6 +1,7 @@
 package com.back_cafe.controllers;
 
 import com.back_cafe.dtos.VentaDTO;
+import com.back_cafe.dtos.VentaResumenDTO;
 import com.back_cafe.servicesintefaces.IVentaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,10 +77,10 @@ public class VentaController {
 
     // Obtener solo las ventas del usuario autenticado
     @GetMapping
-    public List<VentaDTO> listar() {
+    public List<VentaResumenDTO> listar() {
         return vS.obtenerVentasPorUsuario().stream().map(x -> {
             ModelMapper m = new ModelMapper();
-            return m.map(x, VentaDTO.class);
+            return m.map(x, VentaResumenDTO.class);
         }).collect(Collectors.toList());
     }
 

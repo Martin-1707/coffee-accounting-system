@@ -1,6 +1,7 @@
 package com.back_cafe.controllers;
 
 import com.back_cafe.dtos.CompraInsumoDTO;
+import com.back_cafe.dtos.CompraResumenDTO;
 import com.back_cafe.entities.CompraInsumo;
 import com.back_cafe.servicesintefaces.ICompraInsumoService;
 import org.modelmapper.ModelMapper;
@@ -24,10 +25,10 @@ public class CompraInsumoController {
     }
 
     @GetMapping
-    public List<CompraInsumoDTO> listar(){
+    public List<CompraResumenDTO> listar(){
         return ciS.obtenerComprasPorUsuario().stream().map(x->{
             ModelMapper m=new ModelMapper();
-            return m.map(x,CompraInsumoDTO.class);
+            return m.map(x, CompraResumenDTO.class);
         }).collect(Collectors.toList());
     }
 

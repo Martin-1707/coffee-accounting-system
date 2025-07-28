@@ -1,21 +1,19 @@
 package com.back_cafe.dtos;
 
-import com.back_cafe.entities.Usuario;
-
 import java.time.LocalDate;
 
-public class CompraInsumoDTO {
-    private int idcompra;
+public class CompraResumenDTO {
+    private Integer idcompra;
     private LocalDate fecha_inicial;
     private LocalDate fecha_final;
-    private double monto;
-    private Usuario usuario;
+    private Double monto;
+    private UsuarioSuperiorDTO usuario;
 
-    public int getIdcompra() {
+    public Integer getIdcompra() {
         return idcompra;
     }
 
-    public void setIdcompra(int idcompra) {
+    public void setIdcompra(Integer idcompra) {
         this.idcompra = idcompra;
     }
 
@@ -35,19 +33,19 @@ public class CompraInsumoDTO {
         this.fecha_final = fecha_final;
     }
 
-    public double getMonto() {
+    public Double getMonto() {
         return monto;
     }
 
-    public void setMonto(double monto) {
+    public void setMonto(Double monto) {
         this.monto = monto;
     }
 
-    public Usuario getUsuario() {
+    public UsuarioSuperiorDTO getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(UsuarioSuperiorDTO usuario) {
         this.usuario = usuario;
     }
 }

@@ -2,7 +2,6 @@ package com.back_cafe.servicesimplements;
 
 import com.back_cafe.dtos.UsuarioDTO;
 import com.back_cafe.dtos.UsuarioJerarquicoDTO;
-import com.back_cafe.entities.Rol;
 import com.back_cafe.entities.Usuario;
 import com.back_cafe.repositories.IUsuarioRepository;
 import com.back_cafe.servicesintefaces.IUsuarioService;
@@ -24,9 +23,16 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Constantes para los nombres de roles
+    private static final int ROL_CLIENTE = 4;
+    private static final int ROL_VENDEDOR = 1;
+    private static final int ROL_SUPERVISOR = 6;
+    private static final int ROL_ADMIN = 5;
+    // Fin de constantes
+
     public void insert(Usuario usuario) {
         // Validación de roles y credenciales
-        if (usuario.getRol().getIdrol() == 4) { // Si es cliente
+        if (usuario.getRol().getIdrol()==ROL_CLIENTE) { // Si es cliente
             usuario.setUsername(null);
             usuario.setPassword(null);
         } else { // Para otros roles, validar que tengan credenciales
@@ -62,9 +68,9 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Override
     public List<Usuario> listarClientesPorVendedor(int idVendedor) {
         Usuario vendedor = uR.findById(idVendedor).orElse(null);
-        if (vendedor != null && vendedor.getRol().getIdrol() == 1) { // Asumiendo que 1 es el ID del rol vendedor
+        if (vendedor != null && vendedor.getRol().getNombre_rol().equals(ROL_VENDEDOR)) {
             return vendedor.getSubordinados().stream()
-                    .filter(u -> u.getRol().getIdrol() == 4) // ID 4 para clientes
+                    .filter(u -> u.getRol().getNombre_rol().equals(ROL_CLIENTE))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
@@ -73,9 +79,9 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Override
     public List<Usuario> listarVendedoresPorAsesor(int idAsesor) {
         Usuario asesor = uR.findById(idAsesor).orElse(null);
-        if (asesor != null && asesor.getRol().getIdrol() == 6) { // Asumiendo que 2 es el ID del rol asesor
+        if (asesor != null && asesor.getRol().getNombre_rol().equals(ROL_SUPERVISOR)) {
             return asesor.getSubordinados().stream()
-                    .filter(u -> u.getRol().getIdrol() == 1) // ID 3 para vendedores
+                    .filter(u -> u.getRol().getNombre_rol().equals(ROL_VENDEDOR))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
@@ -84,9 +90,9 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Override
     public List<Usuario> listarAsesoresPorAdmin(int idAdmin) {
         Usuario admin = uR.findById(idAdmin).orElse(null);
-        if (admin != null && admin.getRol().getIdrol() == 5) { // Asumiendo que 1 es el ID del rol admin
+        if (admin != null && admin.getRol().getNombre_rol().equals(ROL_ADMIN)) {
             return admin.getSubordinados().stream()
-                    .filter(u -> u.getRol().getIdrol() == 6) // ID 2 para asesores
+                    .filter(u -> u.getRol().getNombre_rol().equals(ROL_SUPERVISOR))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
@@ -164,12 +170,6 @@ public class UsuarioServiceImplement implements IUsuarioService {
         return mapper.map(usuario, UsuarioDTO.class);
     }
 
-
-
-    /**
-     * Método auxiliar recursivo para agregar “todos los subordinados en profundidad”
-     * del usuario dado al Set contenedor.
-     */
     private void agregarSubordinadosRecursivo(Usuario padre, Set<Usuario> contenedor) {
         if (padre.getSubordinados() == null) {
             return;
@@ -182,28 +182,27 @@ public class UsuarioServiceImplement implements IUsuarioService {
         }
     }
 
-
     @Override
     public List<Usuario> obtenerUsuariosPorRol() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Obtener usuario autenticado
+        String username = authentication.getName();
 
-        // Verificar si el usuario es Administrador o Supervisor
+        // Verificar si el usuario es Administrador o Supervisor usando nombres de roles
         boolean isAdminOrSupervisor = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals("Administrador") || role.equals("Supervisor"));
+                .anyMatch(role -> role.equals(ROL_ADMIN) || role.equals(ROL_SUPERVISOR));
 
         if (isAdminOrSupervisor) {
-            return uR.findAll(); // Si es Admin o Supervisor, devuelve todos los usuarios
+            return uR.findAll();
         } else {
             Usuario usuario = uR.findByUsername(username);
-            return usuario != null ? List.of(usuario) : Collections.emptyList(); // Devuelve solo su propio usuario
+            return usuario != null ? List.of(usuario) : Collections.emptyList();
         }
     }
 
     @Override
     public List<Usuario> obtenerUsuariosCliente() {
-        return uR.listarPorIdRol(4); // 4 es el idRol de Cliente
+        return uR.findByRolIdrol(ROL_CLIENTE);
     }
 
     public boolean cambiarPassword(int idusuario, String oldPassword, String newPassword) {

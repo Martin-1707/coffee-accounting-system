@@ -12,7 +12,7 @@ public class UsuarioComunDTO {
     private Boolean enabled;
     private LocalDate fecha_creacion;
     private Rol rol;
-    private Usuario usuarioPadre; // Nuevo campoA
+    private Usuario usuarioPadre;
 
     public int getIdusuario() {
         return idusuario;

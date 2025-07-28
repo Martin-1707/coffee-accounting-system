@@ -32,20 +32,6 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/clientes")
-    public ResponseEntity<?> insertarCliente(@RequestBody UsuarioComunDTO dto) {
-        try {
-            ModelMapper m = new ModelMapper();
-            Usuario mn = m.map(dto, Usuario.class);
-            uS.insert(mn);
-            return ResponseEntity.ok("Cliente registrado exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body("Error al registrar cliente: " + e.getMessage());
-        }
-    }
-
-
     @GetMapping
     public List<UsuarioDTO> listar() {
         return uS.obtenerUsuariosPorRol().stream().map(x -> {
