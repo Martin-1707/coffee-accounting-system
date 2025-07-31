@@ -13,6 +13,15 @@ public class UsuarioDTO {
     private Boolean enabled;
     private LocalDate fecha_creacion;
     private Rol rol;
+    private UsuarioSuperiorDTO usuarioPadre;
+
+    public UsuarioSuperiorDTO getUsuarioPadre() {
+        return usuarioPadre;
+    }
+
+    public void setUsuarioPadre(UsuarioSuperiorDTO usuarioPadre) {
+        this.usuarioPadre = usuarioPadre;
+    }
 
     public int getIdusuario() {
         return idusuario;

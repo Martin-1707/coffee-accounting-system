@@ -2,6 +2,7 @@ package com.back_cafe.servicesimplements;
 
 import com.back_cafe.dtos.UsuarioDTO;
 import com.back_cafe.dtos.UsuarioJerarquicoDTO;
+import com.back_cafe.entities.Rol;
 import com.back_cafe.entities.Usuario;
 import com.back_cafe.repositories.IUsuarioRepository;
 import com.back_cafe.servicesintefaces.IUsuarioService;
@@ -25,11 +26,12 @@ public class UsuarioServiceImplement implements IUsuarioService {
 
     // Constantes para los nombres de roles
     private static final int ROL_CLIENTE = 4;
-    private static final int ROL_VENDEDOR = 1;
-    private static final int ROL_SUPERVISOR = 6;
-    private static final int ROL_ADMIN = 5;
+    private static final String ROLE_VENDEDOR = "Vendedor";
+    private static final String ROLE_SUPERVISOR = "Supervisor";
+    private static final String ROLE_ADMIN = "Administrador";
     // Fin de constantes
 
+    @Override
     public void insert(Usuario usuario) {
         // Validación de roles y credenciales
         if (usuario.getRol().getIdrol()==ROL_CLIENTE) { // Si es cliente
@@ -43,7 +45,6 @@ public class UsuarioServiceImplement implements IUsuarioService {
         }
         uR.save(usuario);
     }
-
 
     @Override
     public List<Usuario> list() {
@@ -63,39 +64,6 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Override
     public Usuario listarId(int id) {
         return uR.findById(id).orElse(new Usuario());
-    }
-
-    @Override
-    public List<Usuario> listarClientesPorVendedor(int idVendedor) {
-        Usuario vendedor = uR.findById(idVendedor).orElse(null);
-        if (vendedor != null && vendedor.getRol().getNombre_rol().equals(ROL_VENDEDOR)) {
-            return vendedor.getSubordinados().stream()
-                    .filter(u -> u.getRol().getNombre_rol().equals(ROL_CLIENTE))
-                    .collect(Collectors.toList());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<Usuario> listarVendedoresPorAsesor(int idAsesor) {
-        Usuario asesor = uR.findById(idAsesor).orElse(null);
-        if (asesor != null && asesor.getRol().getNombre_rol().equals(ROL_SUPERVISOR)) {
-            return asesor.getSubordinados().stream()
-                    .filter(u -> u.getRol().getNombre_rol().equals(ROL_VENDEDOR))
-                    .collect(Collectors.toList());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<Usuario> listarAsesoresPorAdmin(int idAdmin) {
-        Usuario admin = uR.findById(idAdmin).orElse(null);
-        if (admin != null && admin.getRol().getNombre_rol().equals(ROL_ADMIN)) {
-            return admin.getSubordinados().stream()
-                    .filter(u -> u.getRol().getNombre_rol().equals(ROL_SUPERVISOR))
-                    .collect(Collectors.toList());
-        }
-        return Collections.emptyList();
     }
 
     @Override
@@ -187,15 +155,26 @@ public class UsuarioServiceImplement implements IUsuarioService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        // Verificar si el usuario es Administrador o Supervisor usando nombres de roles
-        boolean isAdminOrSupervisor = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals(ROL_ADMIN) || role.equals(ROL_SUPERVISOR));
+        Usuario usuario = uR.findByUsername(username);
 
-        if (isAdminOrSupervisor) {
-            return uR.findAll();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals(ROLE_ADMIN));
+
+        if (isAdmin) {
+            // Admin ve todos los vendedores
+            List<Usuario> vendedores = uR.findByRolNombre(ROLE_VENDEDOR);
+            vendedores.add(usuario); // también incluye al admin
+            return vendedores;
+        } else if (usuario.getRol().getNombre_rol().equalsIgnoreCase(ROLE_SUPERVISOR)) {
+            // Supervisor ve solo sus vendedores
+            List<Usuario> vendedores = usuario.getSubordinados().stream()
+                    .filter(u -> u.getRol().getNombre_rol().equalsIgnoreCase(ROLE_VENDEDOR))
+                    .collect(Collectors.toList());
+            vendedores.add(usuario); // también incluye al supervisor
+            return vendedores;
         } else {
-            Usuario usuario = uR.findByUsername(username);
+            // Otros roles solo se ven a sí mismos
             return usuario != null ? List.of(usuario) : Collections.emptyList();
         }
     }

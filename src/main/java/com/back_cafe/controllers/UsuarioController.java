@@ -78,39 +78,6 @@ public class UsuarioController {
         return dto;
     }
 
-    // Nuevo endpoint para listar clientes por vendedor
-    @GetMapping("/vendedor/{idVendedor}/clientes")
-    public List<UsuarioComunDTO> listarClientesPorVendedor(@PathVariable("idVendedor") int idVendedor) {
-        return uS.listarClientesPorVendedor(idVendedor).stream()
-                .map(usuario -> {
-                    ModelMapper m = new ModelMapper();
-                    return m.map(usuario, UsuarioComunDTO.class);
-                })
-                .collect(Collectors.toList());
-    }
-
-    // Nuevo endpoint para listar vendedores por asesor
-    @GetMapping("/asesor/{idAsesor}/vendedores")
-    public List<UsuarioDTO> listarVendedoresPorAsesor(@PathVariable("idAsesor") int idAsesor) {
-        return uS.listarVendedoresPorAsesor(idAsesor).stream()
-                .map(usuario -> {
-                    ModelMapper m = new ModelMapper();
-                    return m.map(usuario, UsuarioDTO.class);
-                })
-                .collect(Collectors.toList());
-    }
-
-    // Nuevo endpoint para listar asesores por administrador
-    @GetMapping("/admin/{idAdmin}/asesores")
-    public List<UsuarioDTO> listarAsesoresPorAdmin(@PathVariable("idAdmin") int idAdmin) {
-        return uS.listarAsesoresPorAdmin(idAdmin).stream()
-                .map(usuario -> {
-                    ModelMapper m = new ModelMapper();
-                    return m.map(usuario, UsuarioDTO.class);
-                })
-                .collect(Collectors.toList());
-    }
-
     // Nuevo endpoint para listar subordinados directos
     @GetMapping("/{idUsuario}/listarSubordinados")
     public List<UsuarioDTO> listarSubordinados(@PathVariable("idUsuario") int idUsuario) {
