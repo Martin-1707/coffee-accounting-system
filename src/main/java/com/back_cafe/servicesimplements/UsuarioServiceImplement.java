@@ -2,7 +2,6 @@ package com.back_cafe.servicesimplements;
 
 import com.back_cafe.dtos.UsuarioDTO;
 import com.back_cafe.dtos.UsuarioJerarquicoDTO;
-import com.back_cafe.entities.Rol;
 import com.back_cafe.entities.Usuario;
 import com.back_cafe.repositories.IUsuarioRepository;
 import com.back_cafe.servicesintefaces.IUsuarioService;
@@ -25,7 +24,7 @@ public class UsuarioServiceImplement implements IUsuarioService {
     private PasswordEncoder passwordEncoder;
 
     // Constantes para los nombres de roles
-    private static final int ROL_CLIENTE = 4;
+    private static final String ROL_CLIENTE = "Cliente";
     private static final String ROLE_VENDEDOR = "Vendedor";
     private static final String ROLE_SUPERVISOR = "Supervisor";
     private static final String ROLE_ADMIN = "Administrador";
@@ -34,12 +33,16 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Override
     public void insert(Usuario usuario) {
         // Validación de roles y credenciales
-        if (usuario.getRol().getIdrol()==ROL_CLIENTE) { // Si es cliente
+        String rolNombre = usuario.getRol().getNombre_rol();
+
+        if (ROL_CLIENTE.equalsIgnoreCase(rolNombre)) { // Si es cliente
             usuario.setUsername(null);
             usuario.setPassword(null);
         } else { // Para otros roles, validar que tengan credenciales
             if (usuario.getUsername() == null || usuario.getPassword() == null) {
-                throw new IllegalArgumentException("Los usuarios con rol diferente a Cliente deben tener username y password");
+                throw new IllegalArgumentException(
+                        "Los usuarios con rol diferente a Cliente deben tener username y password"
+                );
             }
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
@@ -78,14 +81,6 @@ public class UsuarioServiceImplement implements IUsuarioService {
     @Override
     public Usuario findByUsername(String username) {
         return uR.findByUsername(username);
-    }
-
-    private void agregarSubordinados(Usuario usuario, Set<Usuario> visibles) {
-        for (Usuario sub : usuario.getSubordinados()) {
-            if (visibles.add(sub)) { // Evita duplicados y bucles
-                agregarSubordinados(sub, visibles); // Recurse hacia abajo
-            }
-        }
     }
 
     @Override
@@ -180,8 +175,8 @@ public class UsuarioServiceImplement implements IUsuarioService {
     }
 
     @Override
-    public List<Usuario> obtenerUsuariosCliente() {
-        return uR.findByRolIdrol(ROL_CLIENTE);
+    public List<Usuario> obtenerClientesPorVendedor(int vendedorId) {
+        return uR.findClientesByVendedor(vendedorId, ROL_CLIENTE);
     }
 
     public boolean cambiarPassword(int idusuario, String oldPassword, String newPassword) {

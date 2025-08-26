@@ -58,12 +58,28 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/clientes")
-    public List<UsuarioDTO> listarClientes() {
-        return uS.obtenerUsuariosCliente().stream().map(x -> {
-            ModelMapper m = new ModelMapper();
-            return m.map(x, UsuarioDTO.class);
-        }).collect(Collectors.toList());
+    // Caso 1: Vendedor autenticado (automático)
+    @GetMapping("/mis-clientes")
+    public List<UsuarioSuperiorDTO> listarMisClientes(Authentication auth) {
+        Usuario vendedor = uS.findByUsername(auth.getName());
+
+        return uS.obtenerClientesPorVendedor(vendedor.getIdusuario()).stream()
+                .map(x -> {
+                    ModelMapper m = new ModelMapper();
+                    return m.map(x, UsuarioSuperiorDTO.class);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Caso 2: Supervisor/Admin (elige qué vendedor)
+    @GetMapping("/clientes/{vendedorId}")
+    public List<UsuarioSuperiorDTO> listarClientesPorVendedor(@PathVariable int vendedorId) {
+        return uS.obtenerClientesPorVendedor(vendedorId).stream()
+                .map(x -> {
+                    ModelMapper m = new ModelMapper();
+                    return m.map(x, UsuarioSuperiorDTO.class);
+                })
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{id}")

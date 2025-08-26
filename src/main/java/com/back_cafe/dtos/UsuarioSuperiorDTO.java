@@ -3,9 +3,18 @@ package com.back_cafe.dtos;
 import com.back_cafe.entities.Rol;
 
 public class UsuarioSuperiorDTO {
+    private int idusuario;
     private String nombre;
     private String apellido;
     private Rol rol;
+
+    public int getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(int idusuario) {
+        this.idusuario = idusuario;
+    }
 
     public String getNombre() {
         return nombre;

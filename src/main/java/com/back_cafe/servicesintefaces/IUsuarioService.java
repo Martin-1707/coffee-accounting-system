@@ -31,5 +31,5 @@ public interface IUsuarioService {
 
     // Filtrado por rol
     public List<Usuario> obtenerUsuariosPorRol();
-    public List<Usuario> obtenerUsuariosCliente();
+    public List<Usuario> obtenerClientesPorVendedor(int vendedorId);
 }
