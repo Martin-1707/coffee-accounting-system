@@ -62,6 +62,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/login").permitAll() // Permitir acceso a Swagger y login sin autenticación
                         .anyRequest().authenticated() // Todos los demás endpoints requieren autenticación
                 )
