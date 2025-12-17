@@ -2,7 +2,9 @@ package com.back_cafe.servicesimplements;
 
 import com.back_cafe.dtos.UsuarioDTO;
 import com.back_cafe.dtos.UsuarioJerarquicoDTO;
+import com.back_cafe.entities.Rol;
 import com.back_cafe.entities.Usuario;
+import com.back_cafe.repositories.IRolRepository;
 import com.back_cafe.repositories.IUsuarioRepository;
 import com.back_cafe.servicesintefaces.IUsuarioService;
 import org.modelmapper.ModelMapper;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 @Service
 public class UsuarioServiceImplement implements IUsuarioService {
@@ -22,6 +25,8 @@ public class UsuarioServiceImplement implements IUsuarioService {
     private IUsuarioRepository uR;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private IRolRepository rR;
 
     // Constantes para los nombres de roles
     private static final String ROL_CLIENTE = "Cliente";
@@ -32,20 +37,31 @@ public class UsuarioServiceImplement implements IUsuarioService {
 
     @Override
     public void insert(Usuario usuario) {
-        // Validación de roles y credenciales
-        String rolNombre = usuario.getRol().getNombre_rol();
+        if (usuario.getRol() == null || usuario.getRol().getIdrol() == 0) { // ajusta idrol
+            throw new IllegalArgumentException("Debe enviar rol con ID válido");
+        }
 
-        if (ROL_CLIENTE.equalsIgnoreCase(rolNombre)) { // Si es cliente
+        Rol rolDb = rR.findById(usuario.getRol().getIdrol())
+                .orElseThrow(() -> new IllegalArgumentException("Rol no existe"));
+
+        usuario.setRol(rolDb);
+
+        String rolNombre = rolDb.getNombre_rol();
+
+        if (ROL_CLIENTE.equalsIgnoreCase(rolNombre)) {
             usuario.setUsername(null);
             usuario.setPassword(null);
-        } else { // Para otros roles, validar que tengan credenciales
+        } else {
             if (usuario.getUsername() == null || usuario.getPassword() == null) {
-                throw new IllegalArgumentException(
-                        "Los usuarios con rol diferente a Cliente deben tener username y password"
-                );
+                throw new IllegalArgumentException("Usuarios no Cliente deben tener username y password");
             }
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
+
+        if (usuario.getFecha_creacion() == null) {
+            usuario.setFecha_creacion(LocalDate.now());
+        }
+
         uR.save(usuario);
     }
 
@@ -56,7 +72,25 @@ public class UsuarioServiceImplement implements IUsuarioService {
 
     @Override
     public void update(Usuario usuario) {
-        uR.save(usuario);
+        Usuario actual = uR.findById(usuario.getIdusuario())
+                .orElseThrow(() -> new RuntimeException("No existe usuario"));
+
+        // Campos editables
+        actual.setNombre(usuario.getNombre());
+        actual.setApellido(usuario.getApellido());
+        actual.setEnabled(usuario.getEnabled());
+
+        // Si permites cambiar usuarioPadre (admin/supervisor)
+        if (usuario.getUsuarioPadre() != null) {
+            actual.setUsuarioPadre(usuario.getUsuarioPadre());
+        }
+
+        // Rol (siempre cliente en este caso)
+        if (usuario.getRol() != null) {
+            actual.setRol(usuario.getRol());
+        }
+
+        uR.save(actual);
     }
 
     @Override

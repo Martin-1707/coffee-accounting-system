@@ -6,6 +6,7 @@ public class UsuarioSuperiorDTO {
     private int idusuario;
     private String nombre;
     private String apellido;
+    private Boolean enabled;
     private Rol rol;
 
     public int getIdusuario() {
@@ -30,6 +31,14 @@ public class UsuarioSuperiorDTO {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Rol getRol() {
