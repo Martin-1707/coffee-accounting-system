@@ -2,10 +2,13 @@ package com.back_cafe.controllers;
 
 import com.back_cafe.dtos.VentaDTO;
 import com.back_cafe.dtos.VentaResumenDTO;
+import com.back_cafe.entities.Usuario;
+import com.back_cafe.servicesintefaces.IUsuarioService;
 import com.back_cafe.servicesintefaces.IVentaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -19,10 +22,12 @@ import java.util.stream.Collectors;
 public class VentaController {
     @Autowired
     private IVentaService vS;
+    @Autowired
+    private IUsuarioService uS;
 
-    // Registrar una venta con productos (Método original)
+    // Registrar una venta con productos (Metodo original)
     @PostMapping("/registrar")
-    public ResponseEntity<String> registrarVenta(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<String> registrarVenta(@RequestBody Map<String, Object> request, Authentication auth) {
         try {
             int clienteId = (int) request.get("clienteId");
             int vendedorId = (int) request.get("vendedorId");
@@ -31,7 +36,11 @@ public class VentaController {
             String productosJson = request.get("productos").toString();
             Integer tipoPagoId = (Integer) request.get("tipoPagoId");
 
-            // ✅ Nueva lógica: procesar la fecha si viene
+            Usuario actual = uS.findByUsername(auth.getName());
+            if (actual.getRol().getNombre_rol().equalsIgnoreCase("Vendedor")) {
+                vendedorId = actual.getIdusuario();
+            }
+
             LocalDate fechaVenta = null;
             if (request.containsKey("fechaVenta") && request.get("fechaVenta") != null) {
                 String fechaStr = request.get("fechaVenta").toString();
@@ -50,7 +59,7 @@ public class VentaController {
 
     // Nuevo método: Registrar una venta simple (Sin productos)
     @PostMapping("/registrar-simple")
-    public ResponseEntity<String> registrarVentaSimple(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<String> registrarVentaSimple(@RequestBody Map<String, Object> request, Authentication auth) {
         try {
             int clienteId = (int) request.get("clienteId");
             int vendedorId = (int) request.get("vendedorId");
@@ -59,7 +68,11 @@ public class VentaController {
             BigDecimal abono = new BigDecimal(request.get("abono").toString());
             Integer tipoPagoId = request.get("tipoPagoId") != null ? (Integer) request.get("tipoPagoId") : null;
 
-            // ✅ Nueva lógica: procesar la fecha si viene (fecha y hora)
+            Usuario actual = uS.findByUsername(auth.getName());
+            if (actual.getRol().getNombre_rol().equalsIgnoreCase("Vendedor")) {
+                vendedorId = actual.getIdusuario();
+            }
+
             LocalDate fechaVenta = null;
             if (request.containsKey("fechaVenta") && request.get("fechaVenta") != null) {
                 String fechaStr = request.get("fechaVenta").toString(); // formato esperado: "2025-05-19 10:30:00"
