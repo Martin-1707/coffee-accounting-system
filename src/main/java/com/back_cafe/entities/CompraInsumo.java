@@ -20,17 +20,21 @@ public class CompraInsumo {
     @Column(name = "monto", nullable = false)
     private double monto;
 
+    @Column(name = "fecha_registro", nullable = false)
+    private LocalDate fecha_registro;
+
     @ManyToOne
     @JoinColumn(name = "idusuario", nullable = false) // Relación con Usuario
     private Usuario usuario;
 
     public CompraInsumo() { }
 
-    public CompraInsumo(int idcompra, LocalDate fecha_inicial, LocalDate fecha_final, double monto, Usuario usuario) {
+    public CompraInsumo(int idcompra, LocalDate fecha_inicial, LocalDate fecha_final, double monto, LocalDate fecha_registro, Usuario usuario) {
         this.idcompra = idcompra;
         this.fecha_inicial = fecha_inicial;
         this.fecha_final = fecha_final;
         this.monto = monto;
+        this.fecha_registro = fecha_registro;
         this.usuario = usuario;
     }
 
@@ -72,5 +76,13 @@ public class CompraInsumo {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public LocalDate getFecha_registro() {
+        return fecha_registro;
+    }
+
+    public void setFecha_registro(LocalDate fecha_registro) {
+        this.fecha_registro = fecha_registro;
     }
 }

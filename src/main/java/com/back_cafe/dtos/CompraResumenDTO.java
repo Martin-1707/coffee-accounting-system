@@ -8,6 +8,7 @@ public class CompraResumenDTO {
     private LocalDate fecha_final;
     private Double monto;
     private UsuarioSuperiorDTO usuario;
+    private LocalDate fecha_registro;
 
     public Integer getIdcompra() {
         return idcompra;
@@ -47,5 +48,13 @@ public class CompraResumenDTO {
 
     public void setUsuario(UsuarioSuperiorDTO usuario) {
         this.usuario = usuario;
+    }
+
+    public LocalDate getFecha_registro() {
+        return fecha_registro;
+    }
+
+    public void setFecha_registro(LocalDate fecha_registro) {
+        this.fecha_registro = fecha_registro;
     }
 }
